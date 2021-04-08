@@ -58,7 +58,7 @@ var _ wk.Defaulter = &PodPresetWebhook{}
 func (r *PodPresetWebhook) Default() {
 	podLog.Info("default", "name", r.object.Name)
 	d, _ := json.Marshal(r.object)
-	println(d)
+	println(string(d))
 }
 
 // +kubebuilder:webhook:path=/mutate-podpreset-core-v1-pod,mutating=true,failurePolicy=ignore,groups=core,resources=pods,verbs=create;update,versions=v1,name=mpodpreset.pod.kb.io,sideEffects=None,admissionReviewVersions=v1;v1beta1
