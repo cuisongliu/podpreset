@@ -57,7 +57,7 @@ var _ wk.Defaulter = &PodPresetWebhook{}
 
 // Default implements webhook.Defaulter so a webhook will be registered for the type
 func (r *PodPresetWebhook) Default() {
-	podLog.Info("default", "name", r.object.Name)
+	podLog.Info("mutate", "namespace", r.object.Namespace, "uid", r.object.UID, "name", r.object.Name)
 	label := r.object.Labels
 	label["webhook"] = "webhook1"
 	_ = r.client.Patch(context.Background(), r.object, client.RawPatch(types.MergePatchType, PatchData([]PatchStruct{
