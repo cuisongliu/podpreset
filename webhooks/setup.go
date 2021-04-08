@@ -29,7 +29,7 @@ func SetupWebhookWithManager(mgr ctrl.Manager) error {
 		WK:             hookServer,
 		Webhook:        &PodPresetWebhook{},
 		Obj:            &v1.Pod{},
-		DefaultingPath: "/mutate-apps-v1-sts",
+		DefaultingPath: "/mutate-podpreset-core-v1-pod",
 		Client:         c,
 	}
 	wkpods.Init()
