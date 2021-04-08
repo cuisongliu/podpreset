@@ -71,8 +71,7 @@ func main() {
 	svcName := Env("SVC_NAME", "webhook-service")
 	secretName := Env("SECRET_NAME", "webhook-secret")
 	csrName := Env("CSR_NAME", "webhook-csr")
-	mutateName := Env("MUTATING_NAME", "mutating-cfg")
-	validateName := Env("VALIDATING_NAME", "validating-cfg")
+	mutateName := Env("MUTATING_NAME", "")
 	w := &wk.CertWebHook{
 		Subject:     nil,
 		CertDir:     certDir,
@@ -82,7 +81,6 @@ func main() {
 		CsrName:     csrName,
 		WebHook: []wk.WebHook{
 			{MutatingName: mutateName, ObjectSelect: obj, NamespaceSelect: namespace},
-			{ValidatingName: validateName, ObjectSelect: obj, NamespaceSelect: namespace},
 		},
 	}
 	err := w.Init()
