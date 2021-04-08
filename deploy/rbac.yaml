@@ -1,0 +1,104 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: podpreset
+  namespace: kube-system
+---
+kind: ClusterRoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: podpreset
+  annotations:
+    rbac.authorization.kubernetes.io/autoupdate: "true"
+roleRef:
+  kind: ClusterRole
+  name: cluster-admin
+  apiGroup: rbac.authorization.k8s.io
+subjects:
+  - kind: ServiceAccount
+    name: podpreset
+    namespace: kube-system
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: podpreset
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: podpreset
+  template:
+    metadata:
+      labels:
+        app: podpreset
+    spec:
+     serviceAccountName: podpreset
+     containers:
+      - name: podpreset
+        image: registry.cn-beijing.aliyuncs.com/cuisongliu/podpreset
+        imagePullPolicy: Always
+        command:
+        - /manager
+        args:
+          - --enable-leader-election
+        env:
+          - name: NAMESPACE_NAME
+            valueFrom:
+              fieldRef:
+                apiVersion: v1
+                fieldPath: metadata.namespace
+          - name: SVC_NAME
+            value: podpreset
+          - name: SECRET_NAME
+            value: podpreset
+          - name: CSR_NAME
+            value: podpreset
+          - name: MUTATING_NAME
+            value: podpreset
+        ports:
+          - name: health
+            containerPort: 9090
+            protocol: TCP
+          - name: metrics
+            containerPort: 8080
+            protocol: TCP
+          - name: https
+            containerPort: 9443
+            protocol: TCP
+        readinessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 1
+          httpGet:
+            port: health
+            scheme: HTTP
+            path: /readyz
+          failureThreshold: 3
+          successThreshold: 1
+        livenessProbe:
+          initialDelaySeconds: 10
+          periodSeconds: 10
+          timeoutSeconds: 1
+          httpGet:
+            port: health
+            scheme: HTTP
+            path: /healthz
+          failureThreshold: 3
+          successThreshold: 1
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: podpreset
+  namespace: kube-system
+spec:
+  type: ClusterIP
+  ports:
+    - port: 443
+      targetPort: https
+      protocol: TCP
+      name: https
+  selector:
+    app: podpreset
