@@ -20,6 +20,7 @@ import (
 	wk "github.com/cuisongliu/webhook"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/runtime"
+	"k8s.io/apimachinery/pkg/util/json"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	logf "sigs.k8s.io/controller-runtime/pkg/log"
 )
@@ -56,6 +57,8 @@ var _ wk.Defaulter = &PodPresetWebhook{}
 // Default implements webhook.Defaulter so a webhook will be registered for the type
 func (r *PodPresetWebhook) Default() {
 	podLog.Info("default", "name", r.object.Name)
+	d, _ := json.Marshal(r.object)
+	println(d)
 }
 
 // +kubebuilder:webhook:path=/mutate-podpreset-core-v1-pod,mutating=true,failurePolicy=ignore,groups=core,resources=pods,verbs=create;update,versions=v1,name=mpodpreset.pod.kb.io,sideEffects=None,admissionReviewVersions=v1;v1beta1
