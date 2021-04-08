@@ -12,4 +12,3 @@ SVC_NAME 当前部署的svc名称 默认值 webhook-service
 SECRET_NAME 存储证书的秘钥名称 默认值 webhook-secret
 CSR_NAME 提供证书的资源名称 默认值 webhook-csr
 MUTATING_NAME mutating webhook名称 默认值 mutating-cfg
-VALIDATING_NAME  validating webhook名称 默认值 validating-cfg
